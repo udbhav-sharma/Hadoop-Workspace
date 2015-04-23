@@ -15,7 +15,6 @@ import ReducerIO.FirstReducerValue;
 import com.google.gson.Gson;
 
 import util.BytesUtil;
-import util.Pair;
 import util.Point;
 
 public class VGReducer extends Reducer<Text, BytesWritable, Text, BytesWritable> {
@@ -23,9 +22,9 @@ public class VGReducer extends Reducer<Text, BytesWritable, Text, BytesWritable>
 	private MultipleOutputs<Text,BytesWritable> multipleOutputs;
 	
 	@Override
-	 protected void setup(Context context) throws IOException, InterruptedException {
-	  multipleOutputs  = new MultipleOutputs<Text,BytesWritable>(context);
-	 }
+	protected void setup(Context context) throws IOException, InterruptedException {
+		multipleOutputs  = new MultipleOutputs<Text,BytesWritable>(context);
+	}
 	
 	@Override
 	public void reduce(Text key, Iterable<BytesWritable> values, Context context)
@@ -39,12 +38,12 @@ public class VGReducer extends Reducer<Text, BytesWritable, Text, BytesWritable>
 			for(BytesWritable value:values){
 				try{
 				 	FirstMapperState firstMapperState = (FirstMapperState)BytesUtil.toObject(value.getBytes());
-				 	byteArray = BytesUtil.toByteArray(new FirstReducerValue( firstMapperState.G ));
+				 	byteArray = BytesUtil.toByteArray(new FirstReducerValue( firstMapperState.mapperId, firstMapperState.G ));
 				 	
 					multipleOutputs.write(
-							new Text( String.valueOf( firstMapperState.mapperKey )),
+							new Text( String.valueOf( firstMapperState.mapperId )),
 							new BytesWritable(byteArray),
-							String.valueOf( firstMapperState.mapperKey )
+							String.valueOf( firstMapperState.mapperId )
 						);
 				}
 				catch(ClassNotFoundException e){
@@ -54,18 +53,22 @@ public class VGReducer extends Reducer<Text, BytesWritable, Text, BytesWritable>
 			}
 		}
 		else{
-			Pair<Point,Double> minG = new Pair<Point, Double>(null, Double.MAX_VALUE);
+			double minDist = Double.MAX_VALUE;
+			Point POI = null;
+			int poiMapperId = -1;
+			
 			Point endPoint = gson.fromJson(key.toString(), Point.class);
-			ArrayList<Integer> mapperKeys = new ArrayList<Integer>();
+			ArrayList<Integer> mapperIds = new ArrayList<Integer>();
 
 			for(BytesWritable value:values){
 				try{
 					FirstMapperValue ob = (FirstMapperValue)BytesUtil.toObject(value.getBytes());
-					mapperKeys.add(ob.mapperKey);
+					mapperIds.add(ob.mapperId);
 
-					if(minG.getElement1() > ob.distance){
-						minG.setElement0(ob.poi);
-						minG.setElement1(ob.distance);
+					if(minDist > ob.distance){
+						minDist = ob.distance;
+						POI = ob.poi;
+						poiMapperId = ob.mapperId;
 					}
 				}
 				catch(ClassNotFoundException e){
@@ -74,13 +77,13 @@ public class VGReducer extends Reducer<Text, BytesWritable, Text, BytesWritable>
 				}
 			}
 
-			if(mapperKeys.size()>1){
-				for(int mapperKey:mapperKeys){
-					byteArray = BytesUtil.toByteArray( new FirstReducerValue( endPoint, minG.getElement0(), minG.getElement1() ) );
+			if(mapperIds.size()>1){
+				for(int mapperId:mapperIds){
+					byteArray = BytesUtil.toByteArray( new FirstReducerValue( poiMapperId, endPoint, POI, minDist ) );
 					multipleOutputs.write(
-								new Text( String.valueOf(mapperKey) ),
+								new Text( String.valueOf(mapperId) ),
 								new BytesWritable( byteArray ),
-								String.valueOf(mapperKey)
+								String.valueOf(mapperId)
 							);
 				}
 			}

@@ -21,8 +21,15 @@ public class Point implements Serializable {
         return y;
     }
     
+    @Override
     public boolean equals(Object p){
     	return (this.x==((Point)p).getX() && this.y==((Point)p).getY());
+    }
+    
+    @Override
+    public int hashCode(){
+    	String hash = ((int)x)+""+((int)y);
+    	return Integer.parseInt(hash);
     }
     
     public boolean isNull(){

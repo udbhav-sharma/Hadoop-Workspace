@@ -12,6 +12,7 @@ public class FirstReducerValue implements Serializable {
 	public static final int GRAPH_TYPE = 1;
 	public static final int SOURCE_POINT_TYPE = 2;
 	public int objType;
+	public int mapperId;
 	
 	public Graph G = null;
 	
@@ -19,14 +20,16 @@ public class FirstReducerValue implements Serializable {
 	public Point poi = null;
 	public double distance = 0;
 	
-	public FirstReducerValue( Point sp, Point poi, double distance ){
+	public FirstReducerValue( int mapperId, Point sp, Point poi, double distance ){
+		this.mapperId = mapperId;
 		this.sp = sp;
 		this.poi = poi;
 		this.distance = distance;
 		this.objType = SOURCE_POINT_TYPE;
 	}
 	
-	public FirstReducerValue( Graph G ){
+	public FirstReducerValue( int mapperId, Graph G ){
+		this.mapperId = mapperId;
 		this.G = G;
 		this.objType = GRAPH_TYPE;
 	}

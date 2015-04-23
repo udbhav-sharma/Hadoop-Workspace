@@ -1,6 +1,9 @@
 package Mappers;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.hadoop.io.BytesWritable;
@@ -11,19 +14,22 @@ import org.apache.hadoop.mapreduce.Mapper;
 import ReducerIO.FirstReducerValue;
 import VoronoiDiagram.Graph;
 import VoronoiDiagram.NetworkVoronoiDiagram;
+import VoronoiDiagram.NetworkVoronoiDiagram.NetworkVoronoiPolygon;
 import VoronoiDiagram.ParallelDijkstra;
 import VoronoiDiagram.Vertex;
 
 import util.BytesUtil;
 import util.Point;
 
-public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> { 
+public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {  
 	
 	@Override
 	public void run(Mapper<LongWritable, Text, Text, BytesWritable>.Context context)
 			throws IOException, InterruptedException {
 		setup(context);
 		
+		HashMap< Point, Integer > poiMap = new HashMap<Point,Integer>();
+		int gMapperId = -1;
 		Graph G = null;
 		ArrayList<SourcePoint> sourcePointList = new ArrayList<SourcePoint>();
 		
@@ -53,9 +59,13 @@ public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {
 						FirstReducerValue firstReducerValue = (FirstReducerValue)BytesUtil.toObject(byteArray);
 						if(firstReducerValue.objType == FirstReducerValue.GRAPH_TYPE){
 							G = firstReducerValue.G;
+							gMapperId = firstReducerValue.mapperId;
 						}
 						else if(firstReducerValue.objType == FirstReducerValue.SOURCE_POINT_TYPE){
 							sourcePointList.add(new SourcePoint(firstReducerValue.sp, firstReducerValue.poi, firstReducerValue.distance));
+							if( poiMap.get(firstReducerValue.poi) == null ){
+								poiMap.put( firstReducerValue.poi, firstReducerValue.mapperId );
+							}
 						}
 					}
 					catch(ClassNotFoundException e){
@@ -89,13 +99,25 @@ public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {
 			parallelDijkstra.init(G);
 			parallelDijkstra.generateVoronoi();
 			NetworkVoronoiDiagram nvd = parallelDijkstra.getNVD();
+		
+			Iterator<Map.Entry<Point,NetworkVoronoiPolygon>> it = nvd.nvps.entrySet().iterator();
+			while(it.hasNext()){
+				Map.Entry<Point,NetworkVoronoiPolygon> pair = it.next();
+				byte[] byteArray = BytesUtil.toByteArray(pair.getValue());
 			
-			byte[] byteArray = BytesUtil.toByteArray(nvd);
-			
-			context.write(
-							new Text("New NVD"),
+				if(poiMap.containsKey(pair.getKey())){
+					context.write(
+							new Text(String.valueOf(poiMap.get(pair.getKey()))),
 							new BytesWritable(byteArray)
 					);
+				}
+				else{
+					context.write(
+							new Text(String.valueOf(gMapperId)),
+							new BytesWritable(byteArray)
+					);
+				}
+			}
 		}
 			
 	}
