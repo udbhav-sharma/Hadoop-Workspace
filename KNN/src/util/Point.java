@@ -12,6 +12,11 @@ public class Point implements Serializable {
         this.x = x;
         this.y = y;
     }
+    
+    public Point(Point p) {
+        this.x = p.x;
+        this.y = p.y;
+    }
 
     public double getX() {
         return x;
@@ -19,6 +24,10 @@ public class Point implements Serializable {
 
     public double getY() {
         return y;
+    }
+    
+    public double distance(Point p){
+    	return Math.sqrt(Math.pow(x-p.x, 2)+Math.pow(y-p.y, 2));
     }
     
     @Override
