@@ -1,8 +1,8 @@
 package VoronoiDiagram;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -53,13 +53,13 @@ public class NetworkVoronoiDiagram implements Serializable{
 	public static class NetworkVoronoiPolygon implements Serializable{
 		private static final long serialVersionUID = 30L;
 		public Point p = null;
-		public ArrayList<Edge> graph = null;
-		public ArrayList<Pair<Point,Double>> borderPoints = null;
+		public HashSet<Edge> graph = null;
+		public HashSet<Pair<Point,Double>> borderPoints = null;
 		
 		public NetworkVoronoiPolygon(Point p){
 			this.p = p;
-			this.graph = new ArrayList<NetworkVoronoiDiagram.Edge>();
-			this.borderPoints = new ArrayList<Pair<Point,Double>>();
+			this.graph = new HashSet<NetworkVoronoiDiagram.Edge>();
+			this.borderPoints = new HashSet<Pair<Point,Double>>();
 		}
 		
 		public String toString(){
@@ -88,5 +88,16 @@ public class NetworkVoronoiDiagram implements Serializable{
 		public String toString(){
 			return "{"+p1+", "+p2+", "+w+"}";
 		}
+		
+		@Override
+		public boolean equals( Object obj ){
+			Edge edge = (Edge)obj;
+			return (p1.equals(edge.p1) && p2.equals(edge.p2) && w == edge.w); 
+		}
+		
+		@Override
+	    public int hashCode(){
+	    	return (int) (p1.hashCode()*p2.hashCode()*new Double(w).hashCode());
+	    }
 	}
 }

@@ -33,11 +33,19 @@ public class Pair<K, V> implements Serializable{
     	this.element1 = element1;
     }
     
-    public boolean equals( Pair<K,V> pair ){
+    @Override
+    public boolean equals( Object obj ){
+    	@SuppressWarnings("unchecked")
+		Pair<K,V> pair = ((Pair<K,V>) obj);
     	return element0.equals(pair.getElement0()) && element1.equals(pair.getElement1());
     }
     
     public String toString(){
     	return "{"+this.element0+", "+this.element1+"}";
+    }
+    
+    @Override
+    public int hashCode(){
+    	return (int)element0.hashCode()*element1.hashCode();
     }
 }

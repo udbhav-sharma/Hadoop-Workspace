@@ -10,8 +10,10 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import Mappers.VGMapper;
 import Mappers.VGMapper2;
+import Mappers.VGMapper3;
 import Reducers.VGReducer;
 import Reducers.VGReducer2;
+import Reducers.VGReducer3;
 
 public class VGDriver extends Configured{
 
@@ -47,6 +49,21 @@ public class VGDriver extends Configured{
 		FileOutputFormat.setOutputPath(job2, new Path("/KNN/out2"));
 
 		job2.waitForCompletion(true);
+		
+		Configuration conf3 = new Configuration();
+		Job job3 = Job.getInstance(conf3, "VoronoiGraphs3");
+		job3.setJarByClass(VGDriver.class);
+
+		job3.setMapperClass(VGMapper3.class);
+		job3.setReducerClass(VGReducer3.class);
+		
+		job3.setOutputKeyClass(Text.class);
+		job3.setOutputValueClass(Text.class);
+
+		FileInputFormat.setInputPaths(job3, new Path("/KNN/out2/"));
+		FileOutputFormat.setOutputPath(job3, new Path("/KNN/out3"));
+
+		job3.waitForCompletion(true);
 	}
 
 }

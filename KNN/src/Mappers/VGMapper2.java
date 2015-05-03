@@ -55,23 +55,23 @@ public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {
 				for(byte b: byteList)
 					byteArray[i++] = b;
 
-					try{
-						FirstReducerValue firstReducerValue = (FirstReducerValue)BytesUtil.toObject(byteArray);
-						if(firstReducerValue.objType == FirstReducerValue.GRAPH_TYPE){
-							G = firstReducerValue.G;
-							gMapperId = firstReducerValue.mapperId;
-						}
-						else if(firstReducerValue.objType == FirstReducerValue.SOURCE_POINT_TYPE){
-							sourcePointList.add(new SourcePoint(firstReducerValue.sp, firstReducerValue.poi, firstReducerValue.distance));
-							if( poiMap.get(firstReducerValue.poi) == null ){
-								poiMap.put( firstReducerValue.poi, firstReducerValue.mapperId );
-							}
+				try{
+					FirstReducerValue firstReducerValue = (FirstReducerValue)BytesUtil.toObject(byteArray);
+					if(firstReducerValue.objType == FirstReducerValue.GRAPH_TYPE){
+						G = firstReducerValue.G;
+						gMapperId = firstReducerValue.mapperId;
+					}
+					else if(firstReducerValue.objType == FirstReducerValue.SOURCE_POINT_TYPE){
+						sourcePointList.add(new SourcePoint(firstReducerValue.sp, firstReducerValue.poi, firstReducerValue.distance));
+						if( poiMap.get(firstReducerValue.poi) == null ){
+							poiMap.put( firstReducerValue.poi, firstReducerValue.mapperId );
 						}
 					}
-					catch(ClassNotFoundException e){
-						System.err.println(e);
-						return;
-					}
+				}
+				catch(ClassNotFoundException e){
+					System.err.println(e);
+					return;
+				}
 			}
 		}
 		
