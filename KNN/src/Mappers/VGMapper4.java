@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -21,12 +22,12 @@ import VoronoiDiagram.NetworkVoronoiDiagram;
 import VoronoiDiagram.NetworkVoronoiDiagram.Edge;
 import VoronoiDiagram.NetworkVoronoiDiagram.NetworkVoronoiPolygon;
 
-public class VGMapper4 extends Mapper<LongWritable, Text, Text, Text>{
+public class VGMapper4 extends Mapper<LongWritable, Text, Text, BytesWritable>{
 	
 	private static HashMap<Point, ArrayList<Point>> points = new HashMap<Point, ArrayList<Point>>();
 	
 	@Override
-	public void run(Mapper<LongWritable, Text, Text, Text>.Context context)
+	public void run(Mapper<LongWritable, Text, Text, BytesWritable>.Context context)
 			throws IOException, InterruptedException {
 		setup(context);
 		
@@ -125,12 +126,12 @@ public class VGMapper4 extends Mapper<LongWritable, Text, Text, Text>{
 			for(Point p:testPoints){
 				Pair<Point,Double> g = tree.getGenerator(p);
 				if(g!=null)
-					map(new Text(p.toString()),new Text(g.toString()),context);
+					map(new Text(p.toString()),new BytesWritable(BytesUtil.toByteArray(g)),context);
 			}
 		}
 	}
 	
-	public void map(Text key, Text input, Context context)
+	public void map(Text key, BytesWritable input, Context context)
 			throws IOException, InterruptedException {
 		context.write(key,input);
 	}

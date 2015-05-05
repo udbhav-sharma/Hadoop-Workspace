@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -17,10 +18,10 @@ import VoronoiDiagram.NetworkVoronoiDiagram;
 import VoronoiDiagram.NetworkVoronoiDiagram.Edge;
 import VoronoiDiagram.NetworkVoronoiDiagram.NetworkVoronoiPolygon;
 
-public class VGMapper3 extends Mapper<LongWritable, Text, Text, Text>{
+public class VGMapper3 extends Mapper<LongWritable, Text, Text, BytesWritable>{
 	
 	@Override
-	public void run(Mapper<LongWritable, Text, Text, Text>.Context context)
+	public void run(Mapper<LongWritable, Text, Text, BytesWritable>.Context context)
 			throws IOException, InterruptedException {
 		setup(context);
 		
@@ -73,9 +74,11 @@ public class VGMapper3 extends Mapper<LongWritable, Text, Text, Text>{
 		int mapperId = rand.nextInt(10000);
 		
 		if(nvd.nvps.size()>0)
-			context.write(new Text(String.valueOf(mapperId)), new Text(nvd.toString()));
+			map(new Text(String.valueOf(mapperId)), new BytesWritable(BytesUtil.toByteArray(nvd)),context);
 	}
 	
-	public void map(LongWritable key, Text input, Context context)
-			throws IOException, InterruptedException {}
+	public void map(Text key, BytesWritable input, Context context)
+			throws IOException, InterruptedException {
+		context.write(key,input);
+	}
 }

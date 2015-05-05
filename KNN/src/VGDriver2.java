@@ -2,6 +2,7 @@
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -21,10 +22,10 @@ public class VGDriver2 extends Configured{
 		job.setReducerClass(VGReducer4.class);
 		
 		job.setOutputKeyClass(Text.class);
-		job.setOutputValueClass(Text.class);
+		job.setOutputValueClass(BytesWritable.class);
 		
-		FileInputFormat.setInputPaths(job, new Path("/KNN/out3/"));
-		FileOutputFormat.setOutputPath(job, new Path("/KNN/out4"));
+		FileInputFormat.setInputPaths(job, new Path("/VD/out3/"));
+		FileOutputFormat.setOutputPath(job, new Path("/1NN/out"));
 		
 		job.waitForCompletion(true);
 	}

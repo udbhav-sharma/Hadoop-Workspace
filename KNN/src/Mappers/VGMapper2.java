@@ -106,15 +106,17 @@ public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {
 				byte[] byteArray = BytesUtil.toByteArray(pair.getValue());
 			
 				if(poiMap.containsKey(pair.getKey())){
-					context.write(
+					map(
 							new Text(String.valueOf(poiMap.get(pair.getKey()))),
-							new BytesWritable(byteArray)
+							new BytesWritable(byteArray),
+							context
 					);
 				}
 				else{
-					context.write(
+					map(
 							new Text(String.valueOf(gMapperId)),
-							new BytesWritable(byteArray)
+							new BytesWritable(byteArray),
+							context
 					);
 				}
 			}
@@ -122,8 +124,10 @@ public class VGMapper2 extends Mapper<LongWritable, Text, Text, BytesWritable> {
 			
 	}
 	
-	public void map(LongWritable key, Text input, Context context)
-		throws IOException, InterruptedException {}
+	public void map(Text key, BytesWritable input, Context context)
+		throws IOException, InterruptedException {
+		context.write(key,input);
+	}
 
 }
 

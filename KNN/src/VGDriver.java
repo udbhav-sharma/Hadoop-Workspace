@@ -28,8 +28,8 @@ public class VGDriver extends Configured{
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(BytesWritable.class);
 		
-		FileInputFormat.setInputPaths(job, new Path("/KNN/in/"));
-		FileOutputFormat.setOutputPath(job, new Path("/KNN/out"));
+		FileInputFormat.setInputPaths(job, new Path("/VD/in/"));
+		FileOutputFormat.setOutputPath(job, new Path("/VD/out"));
 		
 		job.waitForCompletion(true);
 		
@@ -43,8 +43,8 @@ public class VGDriver extends Configured{
 		job2.setOutputKeyClass(Text.class);
 		job2.setOutputValueClass(BytesWritable.class);
 
-		FileInputFormat.setInputPaths(job2, new Path("/KNN/out/"));
-		FileOutputFormat.setOutputPath(job2, new Path("/KNN/out2"));
+		FileInputFormat.setInputPaths(job2, new Path("/VD/out/"));
+		FileOutputFormat.setOutputPath(job2, new Path("/VD/out2"));
 
 		job2.waitForCompletion(true);
 		
@@ -56,10 +56,10 @@ public class VGDriver extends Configured{
 		job3.setReducerClass(VGReducer3.class);
 		
 		job3.setOutputKeyClass(Text.class);
-		job3.setOutputValueClass(Text.class);
+		job3.setOutputValueClass(BytesWritable.class);
 
-		FileInputFormat.setInputPaths(job3, new Path("/KNN/out2/"));
-		FileOutputFormat.setOutputPath(job3, new Path("/KNN/out3"));
+		FileInputFormat.setInputPaths(job3, new Path("/VD/out2/"));
+		FileOutputFormat.setOutputPath(job3, new Path("/VD/out3"));
 
 		job3.waitForCompletion(true);
 	}
