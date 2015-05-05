@@ -92,6 +92,10 @@ public class ParallelDijkstra {
 						u.adjacencies.add(new Edge(v,newWeights.getElement0()));
 						u.pis = union(v,e.v);
 					}
+					else{
+						u.adjacencies.add(new Edge(v,newWeights.getElement0()));
+						u.pis = union(v,e.v);
+					}
 					newAdjacency.add(new Edge(u,newWeights.getElement0()));
 				}
 				else

@@ -28,8 +28,6 @@ public class VGDriver extends Configured{
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(BytesWritable.class);
 		
-		//job.setNumReduceTasks(1);
-		
 		FileInputFormat.setInputPaths(job, new Path("/KNN/in/"));
 		FileOutputFormat.setOutputPath(job, new Path("/KNN/out"));
 		

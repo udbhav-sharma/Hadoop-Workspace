@@ -14,8 +14,8 @@ public class Sources extends Vertex {
 	}
 	
 	public void reset(){
+		super.reset();
 		this.dist = 0;
-		this.flag=false;
 		this.pi=this.p;
 		this.pis.put(this.p,new Generator(this.p, 0, 0));
 	}

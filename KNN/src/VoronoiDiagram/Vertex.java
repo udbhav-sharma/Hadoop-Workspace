@@ -6,7 +6,6 @@ import java.util.HashMap;
 
 import util.Point;
 
-
 public class Vertex implements Comparable<Vertex>, Serializable {
 	
 	private static final long serialVersionUID = 819335279369358695L;
