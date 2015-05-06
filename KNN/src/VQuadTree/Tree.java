@@ -133,6 +133,8 @@ public class Tree {
 	private void get1NN(Node node, Point p, ArrayList<Pair<Point,Double>> result){
 		if(node.r.contains(p)){
 			if(node.isLeaf){
+				if(node.poi==null)
+					return;
 				boolean isPresent = false;
 				for(Pair<Point,Double> pair:result){
 					if(pair.getElement0().equals(node.poi))

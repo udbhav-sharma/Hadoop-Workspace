@@ -6,6 +6,5 @@
 	<classpathentry kind="lib" path="/usr/local/hadoop/share/hadoop/common/hadoop-common-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/usr/local/hadoop/share/hadoop/mapreduce/hadoop-mapreduce-client-core-2.6.0.jar"/>
 	<classpathentry kind="lib" path="/usr/local/hadoop/share/hadoop/hdfs/hadoop-hdfs-2.6.0.jar"/>
-	<classpathentry kind="lib" path="/home/hduser/Downloads/gson-2.3.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
