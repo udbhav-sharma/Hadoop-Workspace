@@ -25,7 +25,7 @@ public class VGDriver extends Configured{
 		job.setMapperClass(VGMapper.class);
 		job.setReducerClass(VGReducer.class);
 		
-		job.setOutputKeyClass(Text.class);
+		job.setOutputKeyClass(BytesWritable.class);
 		job.setOutputValueClass(BytesWritable.class);
 		
 		FileInputFormat.setInputPaths(job, new Path("/VD/in/"));

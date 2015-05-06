@@ -7,8 +7,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 
-import com.google.gson.Gson;
-
+import MapperIO.FirstMapperKey;
 import MapperIO.FirstMapperState;
 import MapperIO.FirstMapperValue;
 import VoronoiDiagram.Graph;
@@ -18,10 +17,10 @@ import VoronoiDiagram.Vertex;
 import util.BytesUtil;
 import util.Point;
 
-public class VGMapper extends Mapper<LongWritable, Text, Text, BytesWritable> {
+public class VGMapper extends Mapper<LongWritable, Text, BytesWritable, BytesWritable> {
 
 	@Override
-	public void run(Mapper<LongWritable, Text, Text, BytesWritable>.Context context)
+	public void run(Mapper<LongWritable, Text, BytesWritable, BytesWritable>.Context context)
 			throws IOException, InterruptedException {
 		setup(context);
 		
@@ -64,12 +63,11 @@ public class VGMapper extends Mapper<LongWritable, Text, Text, BytesWritable> {
 		parallelDijkstra.generateVoronoi();
 		
 		byte[] byteArray;
-		Gson gson = new Gson();
 
 		for(Vertex v: G.getV()){
 			byteArray = BytesUtil.toByteArray( new FirstMapperValue(mapperId, v.pi, v.dist) );
 			map(
-					new Text(gson.toJson(v.p)),
+					new BytesWritable(BytesUtil.toByteArray(new FirstMapperKey(v.p))),
 					new BytesWritable(byteArray),
 					context
 				);
@@ -77,7 +75,7 @@ public class VGMapper extends Mapper<LongWritable, Text, Text, BytesWritable> {
 		
 		byteArray = BytesUtil.toByteArray(new FirstMapperState( mapperId, G ));
 		map(
-				new Text("Graph"),
+				new BytesWritable(BytesUtil.toByteArray(new FirstMapperKey())),
 				new BytesWritable(byteArray),
 				context
 			);
@@ -85,7 +83,7 @@ public class VGMapper extends Mapper<LongWritable, Text, Text, BytesWritable> {
 		cleanup(context);
 	}
 
-	public void map(Text key, BytesWritable input, Context context)
+	public void map(BytesWritable key, BytesWritable input, Context context)
 			throws IOException, InterruptedException {
 		context.write(key,input);
 	}

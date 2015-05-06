@@ -77,6 +77,13 @@ public class VGMapper4 extends Mapper<LongWritable, Text, Text, BytesWritable>{
 			testPoints.add(new Point(6,7));
 			testPoints.add(new Point(2,2));
 			testPoints.add(new Point(3,3));
+			testPoints.add(new Point(3,8));
+			testPoints.add(new Point(6,3));
+			testPoints.add(new Point(15,17));
+			testPoints.add(new Point(18,20));
+			testPoints.add(new Point(12,16));
+			testPoints.add(new Point(14,2));
+			testPoints.add(new Point(8,14));
 
 			Iterator<Map.Entry<Point,NetworkVoronoiPolygon>> it = nvd.nvps.entrySet().iterator();
 			while(it.hasNext()){
